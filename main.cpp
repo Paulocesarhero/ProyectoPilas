@@ -49,6 +49,8 @@ public:
     void mostrar();
     //...
     void signosDeAgrupacion();
+
+    void signosDeAgrupacion(string cadena);
 };
 Pila::Pila() {
     this->tope = NULL;
@@ -97,37 +99,27 @@ void Pila::mostrar() {
     }
     cout<<"NULL";
 }
-void Pila::signosDeAgrupacion(){
-    Pila paux;
-    Pila analizador;
-    while (!estaVacia()){
-        paux.push(getDato());
-        if (getDato() == ')' || getDato() == '}' || getDato() == ']'){
-            analizador.push(getDato());
-        }
-        if (getDato() == '(' || getDato() == '{' || getDato() == '['){
-            if (!analizador.estaVacia()){
-                if (getDato() == '(' && analizador.getDato() == ')'){
-                    analizador.pop();
-                } if (getDato() == '[' && analizador.getDato() != ']'){
-                    analizador.pop();
-                } if (getDato() == '{' && analizador.getDato() != '}'){
-                    analizador.pop();
-                }
-            }else
-                cout<<"Falta cerrar el"<<getDato()<<"Linea 118";
-        }
-        pop();
-    }
+void Pila::signosDeAgrupacion(string cadena){
 
-    while (!paux.estaVacia()){
-        push(paux.getDato());
-        paux.pop();
+    for (int i = 0; cadena[i] != '\0' ; ++i) {
+        if (cadena[i] == '(' || cadena[i] == '[' || cadena [i] == '{'){
+            push(cadena[i]);
+        }
+        else if (cadena[i] == ')' || cadena [i] == '}' || cadena[i] == ']'){
+            if (!estaVacia()){
+                if (cadena [i] == ')' && getDato() == '('){
+                    pop();
+                } else if (cadena [i] == '}' && getDato() == '{'){
+                    pop();
+                } else if (cadena [i] == ']' && getDato() == '['){
+                    pop();
+                }
+            } else push(cadena[i]);
+        }
     }
-    if (!analizador.estaVacia()){
-        cout<<"Falto cerrar el "<<analizador.getDato();
-        analizador.mostrar();
-    }else
+    if (!estaVacia()){
+        cout<<"Falto cerrar el "<<getDato();
+    } else
         cout<<"Todo correcto";
 
 }
@@ -137,11 +129,9 @@ int main() {
     Pila MainPila;
     cout<<"Inserte una cadena de caracteres\n";
     cin>>cadena;
-    for (char i : cadena) {
-        MainPila.push(i);//se insertan en forma de pila (1234) = )4321(
-    }
+
 //    MainPila.mostrar();
-    MainPila.signosDeAgrupacion();
+    MainPila.signosDeAgrupacion(cadena);
 
     return 0;
 }
